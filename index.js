@@ -82,8 +82,7 @@ program
     // Default action when only options are provided
     const options = program.opts();
     const { localesPath, sourceLanguage, targetLanguages } = options;
-
-    // Your logic for handling options here
+    
     console.log("Configuration provided:");
     console.log("Locales path:", localesPath);
     console.log("Source language:", sourceLanguage);
@@ -94,11 +93,12 @@ program.parse(process.argv);
 
 async function main() {
   const options = program.opts();
-  const { localesPath, sourceLanguage, targetLanguages } = options;
+  const { localesPath, credentialsPath, sourceLanguage, targetLanguages } = options;
 
   // Create an object with the inputs
   const inputData = {
     localesPath: localesPath || config.localesPath,
+    credentialsPath: credentialsPath || config.credentialsPath,
     sourceLanguage: sourceLanguage || config.sourceLanguage,
     targetLanguages: targetLanguages ? targetLanguages : config.targetLanguages
   };
