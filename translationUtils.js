@@ -3,7 +3,10 @@ const fs = require("fs/promises");
 const path = require("path");
 const config = require("./config.json");
 
-const CREDENTIALS = require('./credentials.json');
+// while testing remove ../../../
+// and paste credentials.json in root then, npm link
+const CREDENTIALS = require("../../../"+config.credentialsPath); 
+// const CREDENTIALS  = require('./credentials.json')
 
 const translate = new Translate({
   credentials: CREDENTIALS,

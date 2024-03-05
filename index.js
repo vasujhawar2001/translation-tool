@@ -8,6 +8,7 @@ const {addCaretToFile, addCaretToAllFiles} = require('./addCaret.js')
 
 program
   .option('-l, --localesPath <path>', 'Path for locales directory', config.localesPath)
+  .option('-c, --credentialsPath <path>', 'Path for credentials', config.localesPath)
   .option('-s, --sourceLanguage <code>', 'Source language code', config.sourceLanguage)
   .option('-t, --targetLanguages <codes...>', 'Target languages (backspace seperated)', config.targetLanguages);
 

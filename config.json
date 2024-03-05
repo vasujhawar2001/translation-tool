@@ -1,11 +1,11 @@
 {
-  "localesPath": "src/locales",
+  "localesPath": "public/locales",
+  "credentialsPath": "credentials.json",
   "sourceLanguage": "en",
   "targetLanguages": [
     "ar",
     "fr",
-    "ko",
     "es",
-    "de"
+    "ja"
   ]
 }
