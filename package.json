@@ -5,12 +5,11 @@
     "commander": "^12.0.0"
   },
   "bin": {
-    "translate-tool": "index.js"
+    "translate": "index.js"
   },
-  "name": "@stratup/translation-tool",
+  "name": "@stratupai/translation-tool",
   "version": "1.0.0",
   "description": "Tool to create locale translation files with Google Cloud Translate",
-  "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

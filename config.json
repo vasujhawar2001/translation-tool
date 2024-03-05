@@ -1,3 +1,9 @@
 {
-    
+  "localesPath": "src/locales",
+  "sourceLanguage": "en",
+  "targetLanguages": [
+    "ar",
+    "fr",
+    "ja"
+  ]
 }

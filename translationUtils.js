@@ -3,11 +3,7 @@ const fs = require("fs/promises");
 const path = require("path");
 const config = require("./config.json");
 
-if(Object.keys(config).length<4){
-  console.error("Invalid configuration of tool, one or more arguments  missing.");
-}
-
-const CREDENTIALS = require(config.credentialsPath);
+const CREDENTIALS = require('./credentials.json');
 
 const translate = new Translate({
   credentials: CREDENTIALS,
