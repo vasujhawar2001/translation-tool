@@ -63,7 +63,7 @@ const updateTranslationsRecursive = async (data, targetLanguages, namespace, cur
     
   };
 
-  function removeIdentifierInPlace(obj) {
+  async function removeIdentifierInPlace(obj) {
     if (typeof obj === 'object') {
         if (Array.isArray(obj)) {
             obj.forEach((item, index) => {
@@ -96,27 +96,27 @@ const updateTranslationsRecursive = async (data, targetLanguages, namespace, cur
     currentObj[key] = value;
   };
   
-  const updateTranslations = async (englishFile, targetLanguages) => {
+  const updateTranslations = async (sourceFile, targetLanguages) => {
     try {
       // Read English translation file
-      const englishData = JSON.parse(await fs.readFile(englishFile, "utf-8"));
+      const sourceData = JSON.parse(await fs.readFile(sourceFile, "utf-8"));
 
       // Get the namespace (filename without extension)
-      const namespace = path.basename(englishFile, path.extname(englishFile));
+      const namespace = path.basename(sourceFile, path.extname(sourceFile));
 
       // Update translations recursively
-      await updateTranslationsRecursive(englishData, targetLanguages, namespace);
+      await updateTranslationsRecursive(sourceData, targetLanguages, namespace);
 
-      const updatedEnglishData = removeIdentifierInPlace(englishData);
-  
+      await removeIdentifierInPlace(sourceData);
+
       // Update the English file
       await fs.writeFile(
-        englishFile,
-        JSON.stringify(englishData, null, 2),
+        sourceFile,
+        JSON.stringify(sourceData, null, 2),
         "utf-8"
       );
     } catch (error) {
-      console.error(`Error reading ${englishFile} --> ${error}`);
+      console.error(`Error reading ${sourceFile} --> ${error}`);
     }
   };
 
@@ -137,7 +137,7 @@ const updateTranslationsRecursive = async (data, targetLanguages, namespace, cur
 };
   
 // Example usage
-// const englishFile = "public/locales/en/home.json";
+// const sourceFile = "public/locales/en/home.json";
 // const targetLanguages = ["es", "fr"];
 
 const updateTranslationsFolder = async (folderPath, targetLanguages) => {
@@ -161,10 +161,51 @@ const updateTranslationsFolder = async (folderPath, targetLanguages) => {
   }
 };
 
+const addKey = async (namespace, key, value) => {
+  try {
+    // Define the path to the namespace file
+    const filePath = path.join(config.localesPath, config.sourceLanguage, `${namespace}.json`);
+
+    // Read the namespace file
+    const namespaceData = JSON.parse(await fs.readFile(filePath, "utf-8"));
+
+    // Split the key into segments
+    const segments = key.split('.');
+
+    // Initialize a reference to traverse the nested structure
+    let currentObj = namespaceData;
+
+    // Traverse the nested structure to find the innermost object
+    for (let i = 0; i < segments.length - 1; i++) {
+      const segment = segments[i];
+      if (!currentObj[segment] || typeof currentObj[segment] !== 'object') {
+        currentObj[segment] = {};
+      }
+      currentObj = currentObj[segment];
+    }
+
+    // Add the innermost key with the corresponding value
+    currentObj[`^${segments[segments.length - 1]}`] = value;
+
+    // Write the updated data back to the file
+    await fs.writeFile(
+      filePath,
+      JSON.stringify(namespaceData, null, 2),
+      "utf-8"
+    );
+
+    console.log(`Key "${key}" added to ${namespace}.json`);
+  } catch (error) {
+    console.error(`Error adding key "${key}" to ${namespace}.json --> ${error}`);
+  }
+};
+
+
 module.exports = {
   translateText,
   updateTranslations,
   updateTranslationsFolder,
-  ensureFileExists
+  ensureFileExists,
+  addKey
 }
 

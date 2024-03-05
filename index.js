@@ -3,7 +3,7 @@
 const { program } = require('commander');
 const fs = require('fs');
 const config = require('./config.json');
-const { updateTranslationsFolder } = require('./translationUtils.js');
+const { updateTranslationsFolder, addKey } = require('./translationUtils.js');
 
 program
   .option('-l, --localesPath <path>', 'Path for locales directory', config.localesPath)
@@ -19,6 +19,14 @@ program
 
     updateTranslationsFolder(sourceFolder, targetLanguages);
     console.log("Successfully Updated Translations.");
+  });
+
+  program
+  .command('add-key <namespace> <key> <value>')
+  .description('Add a new key to a namespace')
+  .action((namespace, key, value) => {
+    addKey(namespace, key, value);
+    console.log(`Key "${key}" added to namespace "${namespace}".`);
   });
 
 program
@@ -55,7 +63,7 @@ async function main() {
     if (err) {
       console.error('Error writing to config file:', err);
     } else {
-      console.log(inputData);
+      //console.log(inputData);
     }
   });
 }
