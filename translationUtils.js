@@ -166,6 +166,7 @@ const addKey = async (namespace, key, value) => {
     // Define the path to the namespace file
     const filePath = path.join(config.localesPath, config.sourceLanguage, `${namespace}.json`);
 
+    await ensureFileExists(filePath);
     // Read the namespace file
     const namespaceData = JSON.parse(await fs.readFile(filePath, "utf-8"));
 
@@ -194,7 +195,7 @@ const addKey = async (namespace, key, value) => {
       "utf-8"
     );
 
-    console.log(`Key "${key}" added to ${namespace}.json`);
+    //console.log(`Key "${key}" added to ${namespace}.json`);
   } catch (error) {
     console.error(`Error adding key "${key}" to ${namespace}.json --> ${error}`);
   }

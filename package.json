@@ -8,7 +8,7 @@
     "translate": "index.js"
   },
   "name": "@stratupai/translation-tool",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Tool to create locale translation files with Google Cloud Translate",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

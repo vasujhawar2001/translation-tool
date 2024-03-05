@@ -4,30 +4,77 @@ const { program } = require('commander');
 const fs = require('fs');
 const config = require('./config.json');
 const { updateTranslationsFolder, addKey } = require('./translationUtils.js');
+const {addCaretToFile, addCaretToAllFiles} = require('./addCaret.js')
 
 program
   .option('-l, --localesPath <path>', 'Path for locales directory', config.localesPath)
   .option('-s, --sourceLanguage <code>', 'Source language code', config.sourceLanguage)
-  .option('-t, --targetLanguages <codes...>', 'Target languages (comma separated)', config.targetLanguages);
+  .option('-t, --targetLanguages <codes...>', 'Target languages (backspace seperated)', config.targetLanguages);
 
-program
-  .command('update-translations')
-  .description('Updating all translation files')
-  .action(() => {
+  program
+  .command('run-translations [languages...]')
+  .description('Translate modified keys and run all translation files.')
+  .action((languages) => {
     const { localesPath, sourceLanguage, targetLanguages } = program.opts();
     const sourceFolder = `${localesPath}/${sourceLanguage}`;
 
-    updateTranslationsFolder(sourceFolder, targetLanguages);
-    console.log("Successfully Updated Translations.");
+    // Use the provided languages or the default target languages
+    const languagesToTranslate = languages.length > 0 ? languages : targetLanguages;
+    console.log(languagesToTranslate)
+    updateTranslationsFolder(sourceFolder, languagesToTranslate)
+      .then(() => {
+        console.log("Successfully Updated Translations.");
+      })
+      .catch(error => {
+        console.error('An error occurred while updating translations:', error);
+      });
   });
 
   program
-  .command('add-key <namespace> <key> <value>')
-  .description('Add a new key to a namespace')
+  .command('modify-key <namespace> <key> <value>')
+  .description('Add/update a key-value pair to namespace (translates too)')
   .action((namespace, key, value) => {
-    addKey(namespace, key, value);
-    console.log(`Key "${key}" added to namespace "${namespace}".`);
+    const { localesPath, sourceLanguage, targetLanguages } = program.opts();
+
+    addKey(namespace, key, value)
+    .then(()=>{
+      const sourceFolder = `${localesPath}/${sourceLanguage}`;
+      console.log(`Key "${key}" modified at ${sourceFolder}/${namespace}.json`);
+      
+      updateTranslationsFolder(sourceFolder, targetLanguages);
+      console.log("Successfully Updated Translations.");
+    })
   });
+
+  program
+  .command('update-namespace <namespace>')
+  .description('Update whole translation file')
+  .action((namespace)=>{
+    const { localesPath, sourceLanguage } = program.opts();
+    try{
+      const filePath= `${localesPath}/${sourceLanguage}/${namespace}.json`
+      addCaretToFile(filePath)
+      console.log(`Updated ${filePath}. Now run <run-translations> to translate.`)
+    }
+    catch(err){
+      console.error(err)
+    }
+  })
+
+  program
+  .command('update-locales')
+  .description('Updates all source folder files.')
+  .action(()=>{
+    const { localesPath, sourceLanguage } = program.opts();
+    try{
+      const folderPath= `${localesPath}/${sourceLanguage}`
+      addCaretToAllFiles(folderPath)
+      console.log(`Updated all files. Now run <run-translations> to translate.`)
+    }
+    catch(err){
+      console.error(err)
+    }
+  })
 
 program
   .action(() => {

@@ -18,9 +18,9 @@ function addCaretToKeys(data) {
     }
 }
 // use this function to add Identifier(^) to all keys and proceed to tanslate the file to targeted langauge.
-function addCaretAndSave(filePath) {
+async function addCaretToFile(filePath) {
     const jsonData = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
-    const modifiedData = addCaretToKeys(jsonData);
+    const modifiedData = await addCaretToKeys(jsonData);
     const modifiedJsonString = JSON.stringify(modifiedData, null, 2);
 
     fs.writeFileSync(filePath, modifiedJsonString, 'utf-8');
@@ -31,13 +31,13 @@ USE THE ABOVE FUNCTION ONLY IF YOU WANT TO RUN IT FOR THE WHOLE FILE. It will ad
 and then later you can run translation function.
 */
 // Example Usage
-const filePath = 'src/app/i18n/locales/en/generateIdea.json'; 
-addCaretAndSave(filePath); 
+// const filePath = 'src/app/i18n/locales/en/common.json'; 
+// addCaretToFile(filePath); 
 
 
 /*
 ***************IMPORTANT NOTE***********************:
-BEWARE OF USING processFilesInFolder(), This should only be used to add a whole new language translations to codebase.
+BEWARE OF USING addCaretToAllFiles(), This should only be used to add a whole new language translations to codebase.
 It will run for all namspaces and key-value pair in the en directory.
 
 1) Create an empty directory with the name as its lang code in public/locales/{langCode}
@@ -46,7 +46,7 @@ It will run for all namspaces and key-value pair in the en directory.
 it will waste the google translate API credits).
 */
 
-function processFilesInFolder(folderPath) {
+function addCaretToAllFiles(folderPath) {
     const files = fs.readdirSync(folderPath);
     
     files.forEach(file => {
@@ -66,4 +66,8 @@ function processFilesInFolder(folderPath) {
 
 // const sourceFolderPath = 'src/app/i18n/locales/en'; // source folder for translation
 
-// processFilesInFolder(sourceFolderPath);
+// addCaretToAllFiles(sourceFolderPath);
+module.exports = {
+    addCaretToAllFiles,
+    addCaretToFile
+}
