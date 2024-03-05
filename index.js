@@ -8,7 +8,7 @@ const {addCaretToFile, addCaretToAllFiles} = require('./addCaret.js')
 
 program
   .option('-l, --localesPath <path>', 'Path for locales directory', config.localesPath)
-  .option('-c, --credentialsPath <path>', 'Path for credentials', config.localesPath)
+  .option('-c, --credentialsPath <path>', 'Path for credentials', config.credentialsPath)
   .option('-s, --sourceLanguage <code>', 'Source language code', config.sourceLanguage)
   .option('-t, --targetLanguages <codes...>', 'Target languages (backspace seperated)', config.targetLanguages);
 
@@ -81,10 +81,11 @@ program
   .action(() => {
     // Default action when only options are provided
     const options = program.opts();
-    const { localesPath, sourceLanguage, targetLanguages } = options;
-    
+    const { localesPath, credentialsPath, sourceLanguage, targetLanguages } = options;
+
     console.log("Configuration provided:");
     console.log("Locales path:", localesPath);
+    console.log("Credentials path:", credentialsPath);
     console.log("Source language:", sourceLanguage);
     console.log("Target languages:", targetLanguages);
   });
