@@ -28,7 +28,7 @@ For a detailed walkthrough, you can watch this [video tutorial](https://www.yout
 Install the package via npm:
 
 ```bash
-npm install @stratupai/translation-tool
+npm i @stratupai/translation-tool --save-dev
 ```
 
 ### Step 4: Verify Installation
